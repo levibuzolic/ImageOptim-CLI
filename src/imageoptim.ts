@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import program = require('commander');
 import { sync } from 'globby';
 import { homedir } from 'os';
-import { join } from 'path';
 import { cli } from './';
 import {
   PNGQUANT_NUMBER_OF_COLORS,
@@ -12,7 +11,7 @@ import {
   TMPDIR,
   VERSION
 } from './constants';
-import { isSupported } from './is-supported';
+import { panic } from './log';
 
 const patterns: string[] = [];
 
@@ -79,7 +78,11 @@ program.on('--help', () => {
 program.parse(process.argv);
 
 if (process.platform !== 'darwin') {
-  console.log('imageoptim-cli is macOS only');
+  panic('imageoptim-cli is macOS only');
+}
+
+if (program.numberOfColors != null && program.quality) {
+  panic('--number-of-colors and --quality cannot both be provided');
 }
 
 const supportedTypesPattern = SUPPORTED_FILE_TYPES.map((fileType) => `*${fileType}`).join('|');
@@ -99,7 +102,7 @@ cli({
     stats: program.stats === true
   },
   filePaths,
-  numberOfColors: program.numberOfColors || PNGQUANT_NUMBER_OF_COLORS,
+  numberOfColors: program.numberOfColors,
   quality: program.quality || PNGQUANT_QUALITY,
   speed: program.speed || PNGQUANT_SPEED,
   tmpDir: TMPDIR

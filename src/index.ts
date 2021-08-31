@@ -42,7 +42,7 @@ export interface IOptions {
     stats: boolean;
   };
   filePaths: IFile[];
-  numberOfColors: string;
+  numberOfColors?: string;
   quality: string;
   speed: string;
   tmpDir: string;

@@ -18,9 +18,11 @@ export const bug = (err: Error): void => {
   process.exit(1);
 };
 
-export const panic = async (value: string, options: IOptions): Promise<void> => {
+export const panic = async (value: string, options?: IOptions): Promise<void> => {
   console.log(color.red('! %s'), value);
-  await clean(options);
+  if (options) {
+    await clean(options);
+  }
   process.exit(1);
 };
 
